@@ -131,6 +131,9 @@ void WFCVector::DeleteUnwantedGraphs(GridCell& cell) {
 
 void WFCVector::SortWaveOperation() {
 	const auto compareEntropy = [](const GridCell* a, const GridCell* b) {
+		if (a->GetEntropy() == TileType::MaxSize && b->GetEntropy() == TileType::MaxSize) {
+			return false;
+		}
 		return a->GetEntropy() < b->GetEntropy();
 		};
 	std::stable_sort(this->waveOperation.begin(), this->waveOperation.end(), compareEntropy);

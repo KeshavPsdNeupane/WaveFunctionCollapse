@@ -36,9 +36,9 @@ struct TileSet {
         tiles[Forest] = Tile(Forest, GetTypeName(Forest));
 
         possibleAdjacentTile[Empty] = { Plain, Sand, Water, Forest };
-        possibleAdjacentTile[Plain] = { Plain, Sand, Forest };
+        possibleAdjacentTile[Plain] = { Plain, Sand, Forest};
         possibleAdjacentTile[Sand] = { Sand, Plain, Water };
-        possibleAdjacentTile[Water] = { Water, Sand };
+        possibleAdjacentTile[Water] = { Water, Sand};
         possibleAdjacentTile[Forest] = { Forest, Plain };
     }
 

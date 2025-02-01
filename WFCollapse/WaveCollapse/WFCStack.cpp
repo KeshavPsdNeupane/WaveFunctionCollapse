@@ -47,8 +47,8 @@ void WFCStack::Init() {
 
 void WFCStack::WaveOperation() {
 	if (gridCount.x == 0 || gridCount.y == 0) return;
-
 	if (!waveOperation.empty()) {
+		SortWaveOperation();
 		GridCell* currentCell = waveOperation.top();
 		waveOperation.pop();
 		if (!currentCell->IsGraphCollapsed()) {
@@ -80,10 +80,10 @@ void WFCStack::PropagateTheWave(GridCell& cell) {
 	sf::Vector2i location = cell.GetGridLocation();
 	TileType collapsedType = cell.GetType();
 	std::vector<sf::Vector2i> neighbors = {
- { location.x + 1, location.y },  // Right
- { location.x, location.y - 1 },  // Up
- { location.x - 1, location.y }, // Left
- { location.x, location.y + 1 } // Down (Bottom)
+	{ location.x + 1, location.y },  // Right
+	{ location.x, location.y - 1 },  // Up
+	{ location.x - 1, location.y }, // Left
+	{ location.x, location.y + 1 } // Down (Bottom)
 	};
 	for (sf::Vector2i& neighborPos : neighbors) {
 		if (neighborPos.x >= 0 && neighborPos.x < gridCount.x &&
@@ -96,7 +96,6 @@ void WFCStack::PropagateTheWave(GridCell& cell) {
 		}
 	}
 }
-
 
 void WFCStack::SetColor(GridCell& cell) {
 	sf::Vector2i location = cell.GetGridLocation();
@@ -124,6 +123,34 @@ void WFCStack::SetColor(GridCell& cell) {
 		break;
 	}
 }
+
+void WFCStack::SortWaveOperation() {
+	std::vector<GridCell*> tempVector;
+	while (!waveOperation.empty()) {
+		tempVector.push_back(waveOperation.top());
+		waveOperation.pop();
+	}
+
+	// Sort based on entropy in ascending order, and by grid position (x and y) if entropies are equal
+	std::stable_sort(tempVector.begin(), tempVector.end(),
+		[](const GridCell* a, const GridCell* b) {
+			if (a->GetEntropy() == b->GetEntropy()) {
+				return (a->GetGridLocation().y > b->GetGridLocation().y) &&
+					(a->GetGridLocation().x < b->GetGridLocation().x);
+			}
+			return a->GetEntropy() < b->GetEntropy();
+		});
+
+	for (auto it = tempVector.rbegin(); it != tempVector.rend(); ++it) {
+		waveOperation.push(*it);
+	}
+}
+
+
+
+
+
+
 
 
 

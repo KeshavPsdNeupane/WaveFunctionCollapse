@@ -24,7 +24,8 @@ public:
 private:
     void CollapseTheCurrentGrid(GridCell& cell);
     void PropagateTheWave(GridCell& cell);
+
     void SetColor(GridCell& cell);
  
-
+    void SortWaveOperation();
 };
