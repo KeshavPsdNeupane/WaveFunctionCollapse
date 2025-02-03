@@ -1,19 +1,21 @@
 #include "Runner.h"
-#include"Utility.h"
 Runner::Runner() :
 	window(std::make_shared<sf::RenderWindow>(sf::VideoMode(Utility::WINDOW_SIZE.x, Utility::WINDOW_SIZE.y)
 		, "SFML works!", sf::Style::Close)),
 	event(), wfcStack(Utility::GRID_COUNT),
-	wfcVector(Utility::GRID_COUNT){
-	this->window->setFramerateLimit(Utility::MAX_FRAME);
+	wfcQueue(Utility::GRID_COUNT){
+
+	if (!Utility::FIX_FRAME) {
+		this->window->setFramerateLimit(Utility::MAX_FRAME);
+	}
 }
 
 void Runner::Init() {
-	if (!Utility::USE_VECTOR) {
+	if (Utility::USE_STACK) {
 		this->wfcStack.Init();
 	}
 	else {
-		this->wfcVector.Init();
+		this->wfcQueue.Init();
 	}
 }
 
@@ -34,21 +36,21 @@ void Runner::SfmlLoop() {
 }
 
 void Runner::Update() {
-	if (!Utility::USE_VECTOR){
+	if (Utility::USE_STACK){
 		this->wfcStack.WaveOperation();
 	}
 	else{
-		this->wfcVector.WaveOperation();
+		this->wfcQueue.WaveOperation();
 	}
 	
 }
 
 void Runner::Draw() {
-	if (!Utility::USE_VECTOR) {
+	if (Utility::USE_STACK) {
 		this->wfcStack.Draw(*this->window);
 	}
 	else {
-		this->wfcVector.Draw(*this->window);
+		this->wfcQueue.Draw(*this->window);
 	}
 	
 }

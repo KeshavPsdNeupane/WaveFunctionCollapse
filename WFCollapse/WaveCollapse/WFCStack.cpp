@@ -4,7 +4,7 @@
 #include <random>
 #include"../Utility.h"
 WFCStack::WFCStack(sf::Vector2i gridSize)
-	: gridCount(gridSize), startingPoint(0) {
+	: gridCount(gridSize),mtRand(Utility::SEED) {
 	srand((unsigned int)(time(0)));
 
 	grid.resize(gridCount.x, std::vector<GridCell>(gridCount.y));
@@ -31,18 +31,14 @@ WFCStack::WFCStack(sf::Vector2i gridSize)
 }
 
 void WFCStack::Init() {
-	startingPoint = rand() % (gridCount.x * gridCount.y / 4);
-	sf::Vector2i tempStart(0, (int)(gridCount.y * .2f));
-
-	int startX = tempStart.x + startingPoint % gridCount.x;
-	int startY = tempStart.y + startingPoint / gridCount.x;
-
-	if (startX >= gridCount.x) startX = gridCount.x - 1;
-	if (startY >= gridCount.y) startY = gridCount.y - 1;
-	std::cout << "start = " << startX << " " << startY << "\n";
+	int totalCells = gridCount.x * gridCount.y;
+	int startingPoint = std::uniform_int_distribution<int>(0, totalCells - 1)(mtRand);
+	int startX = startingPoint % gridCount.x;
+	int startY = startingPoint / gridCount.x;
+	startX = std::min(startX, gridCount.x - 1);
+	startY = std::min(startY, gridCount.y - 1);
 	this->waveOperation.push(&grid[startX][startY]);
 }
-
 
 
 void WFCStack::WaveOperation() {
@@ -58,8 +54,7 @@ void WFCStack::WaveOperation() {
 	}
 }
 
-
-void WFCStack::CollapseTheCurrentGrid(GridCell& cell) {
+void WFCStack::CollapseTheCurrentGrid(GridCell& cell){
 	auto& possibleTiles = cell.GetPossibleTileForThisCell();
 	if (possibleTiles.empty()) return;
 	TileType chosenType;
@@ -67,8 +62,7 @@ void WFCStack::CollapseTheCurrentGrid(GridCell& cell) {
 		chosenType = possibleTiles[0];
 	}
 	else {
-		int randomIndex = rand() % possibleTiles.size();
-		chosenType = possibleTiles[randomIndex];
+		chosenType = possibleTiles[GetRandomIndexBasedOnWeight(cell)];
 	}
 	cell.CollapseGraph(chosenType);
 	SetColor(cell);
@@ -97,31 +91,35 @@ void WFCStack::PropagateTheWave(GridCell& cell) {
 	}
 }
 
-void WFCStack::SetColor(GridCell& cell) {
-	sf::Vector2i location = cell.GetGridLocation();
-	TileType colorid = cell.GetType();
-	sf::RectangleShape& rect = this->gridRect[location.x][location.y];
-
-	switch (colorid) {
-	case TileType::Empty:
-		rect.setFillColor(sf::Color::White);
-		break;
-	case TileType::Plain:
-		rect.setFillColor(sf::Color::Green);
-		break;
-	case TileType::Sand:
-		rect.setFillColor(sf::Color::Yellow);
-		break;
-	case TileType::Water:
-		rect.setFillColor(sf::Color::Blue);
-		break;
-	case TileType::Forest:
-		rect.setFillColor(sf::Color(0, 100, 0));
-		break;
-	default:
-		rect.setFillColor(sf::Color::White);
-		break;
+unsigned int WFCStack::GetRandomIndexBasedOnWeight(GridCell& cell){
+	auto& weight = cell.GetWeight();
+	unsigned int totalWeight = 0;
+	for (unsigned int w : weight) {
+		totalWeight += w;
 	}
+	unsigned int randomWeight = std::uniform_int_distribution<int>(0, (int)(totalWeight - 1))(mtRand);
+	unsigned int sum = 0;
+	for (unsigned int i = 0; i < weight.size(); ++i) {
+		sum += weight[i];
+		if (randomWeight < sum) {
+			return i;
+		}
+	}
+	return 0;
+}
+
+void WFCStack::SetColor(GridCell& cell) {
+	 const sf::Vector2i pos = cell.GetGridLocation();
+    sf::RectangleShape& rect = gridRect[pos.x][pos.y];
+    switch (cell.GetType()) {
+	case TileType::Empty:    rect.setFillColor(sf::Color::White); break;
+    case TileType::Plain:    rect.setFillColor(sf::Color::Green); break;
+    case TileType::Sand:     rect.setFillColor(sf::Color::Yellow); break;
+    case TileType::Water:    rect.setFillColor(sf::Color::Blue); break;
+    case TileType::Forest:   rect.setFillColor(sf::Color(0, 100, 0)); break;
+    case TileType::Mountain: rect.setFillColor(sf::Color(85, 85, 85)); break;
+    default:       rect.setFillColor(sf::Color::White); break;
+    }
 }
 
 void WFCStack::SortWaveOperation() {
@@ -139,39 +137,12 @@ void WFCStack::SortWaveOperation() {
 					(a->GetGridLocation().x < b->GetGridLocation().x);
 			}
 			return a->GetEntropy() < b->GetEntropy();
-		});
-
+		});;
 	for (auto it = tempVector.rbegin(); it != tempVector.rend(); ++it) {
 		waveOperation.push(*it);
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void WFCStack::ShowOnConsole() {
-	if (!waveOperation.empty()) {
-		for (int y = 0; y < gridCount.y; ++y) {
-			for (int x = 0; x < gridCount.x; ++x) {
-				std::cout << tileSet.GetTypeName(grid[x][y].GetType()) << " ";
-			}
-			std::cout << "\n";
-		}
-		std::cout << "\n\n\n";
-	}
-}
 
 void WFCStack::Draw(sf::RenderWindow& window) {
 	for (int x = 0; x < gridCount.x; ++x) {

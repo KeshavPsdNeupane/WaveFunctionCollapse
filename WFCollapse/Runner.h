@@ -3,14 +3,15 @@
 #include<iostream>
 #include<memory>
 #include"WaveCollapse/WFCStack.h"
-#include"WaveCollapse/WFCVector.h"
+#include"WaveCollapse/WFCQueue.h"
+#include"Utility.h"
+
 
 class Runner {
 	std::shared_ptr<sf::RenderWindow> window;
 	sf::Event event;
 	WFCStack wfcStack;
-	WFCVector wfcVector;
-
+	WFCPriorityQueue wfcQueue;
 public:
 	Runner();
 public:

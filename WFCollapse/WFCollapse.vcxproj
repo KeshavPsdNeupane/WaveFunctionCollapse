@@ -152,14 +152,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Runner.cpp" />
     <ClCompile Include="WaveCollapse\WFCStack.cpp" />
-    <ClCompile Include="WaveCollapse\WFCVector.cpp" />
+    <ClCompile Include="WaveCollapse\WFCQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Runner.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="WaveCollapse\WaveRes.h" />
     <ClInclude Include="WaveCollapse\WFCStack.h" />
-    <ClInclude Include="WaveCollapse\WFCVector.h" />
+    <ClInclude Include="WaveCollapse\WFCQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

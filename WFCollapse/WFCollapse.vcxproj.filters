@@ -24,7 +24,7 @@
     <ClCompile Include="WaveCollapse\WFCStack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WaveCollapse\WFCVector.cpp">
+    <ClCompile Include="WaveCollapse\WFCQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClInclude Include="WaveCollapse\WFCStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WaveCollapse\WFCVector.h">
+    <ClInclude Include="WaveCollapse\WFCQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
