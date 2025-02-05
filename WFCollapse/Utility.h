@@ -8,8 +8,13 @@ namespace Utility {
 	 const sf::Vector2i GRID_SIZE = sf::Vector2i(WINDOW_SIZE.x / GRID_COUNT.x, WINDOW_SIZE.y / GRID_COUNT.y);
 	 const bool IS_PADDING = false;
 
+
+	 //THIS SEED DETERMINE THE SHAPE OF MAP
+	 const unsigned int SEED = 88888;
+
+
+
 	 const bool USE_STACK = false;
 	 const bool USE_WEIGHT = true;
-	 const unsigned int SEED = 2;
 	 const float INFLUENCE = 0.05f;
 }

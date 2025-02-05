@@ -5,7 +5,7 @@ Runner::Runner() :
 	event(), wfcStack(Utility::GRID_COUNT),
 	wfcQueue(Utility::GRID_COUNT){
 
-	if (!Utility::FIX_FRAME) {
+	if (Utility::FIX_FRAME) {
 		this->window->setFramerateLimit(Utility::MAX_FRAME);
 	}
 }
