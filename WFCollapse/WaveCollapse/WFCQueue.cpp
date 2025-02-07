@@ -35,11 +35,11 @@ void WFCPriorityQueue::CreateVisuals() {
             sf::RectangleShape rect;
             rect.setSize(cellSize);
             rect.setPosition(x * cellSize.x, y * cellSize.y);
-            rect.setFillColor(sf::Color::White);
+            rect.setFillColor(sf::Color::Black);
 
             if (Utility::IS_PADDING) {
                 rect.setOutlineThickness(1);
-                rect.setOutlineColor(sf::Color::Black);
+                rect.setOutlineColor(sf::Color::White);
             }
 
             gridRect[x][y] = rect;
@@ -61,6 +61,18 @@ void WFCPriorityQueue::Init() {
 }
 
 void WFCPriorityQueue::WaveOperation() {
+	if (Utility::DO_AT_ONCE) {
+		while (!waveQueue.empty()) {
+			GridCell* currentCell = waveQueue.top();
+			waveQueue.pop();
+			if (!currentCell->IsGraphCollapsed()) {
+				CollapseCell(*currentCell);
+				Propagate(*currentCell);
+			}
+		}
+		return;
+	}
+    else {
     if (!waveQueue.empty()) {
         GridCell* currentCell = waveQueue.top();
         waveQueue.pop();
@@ -69,6 +81,8 @@ void WFCPriorityQueue::WaveOperation() {
             Propagate(*currentCell);
         }
     }
+    }
+
 }
 
 void WFCPriorityQueue::CollapseCell(GridCell& cell) {
@@ -128,17 +142,16 @@ void WFCPriorityQueue::UpdateCellColor(GridCell& cell) {
     const sf::Vector2i pos = cell.GetGridLocation();
     sf::RectangleShape& rect = gridRect[pos.x][pos.y];
     switch (cell.GetType()) {
-    case TileType::Empty:    rect.setFillColor(sf::Color::White); break;
+    case TileType::Empty:    rect.setFillColor(sf::Color::Black); break;
     case TileType::Plain:    rect.setFillColor(sf::Color::Green); break;
     case TileType::Sand:     rect.setFillColor(sf::Color::Yellow); break;
     case TileType::Water:    rect.setFillColor(sf::Color::Blue); break;
     case TileType::Forest:   rect.setFillColor(sf::Color(0, 100, 0)); break;
     case TileType::Mountain: rect.setFillColor(sf::Color(85, 85, 85)); break;
-    default: rect.setFillColor(sf::Color::White); break;
+    default: rect.setFillColor(sf::Color::Black); break;
     }
 }
 
-// Draw the grid to the window
 void WFCPriorityQueue::Draw(sf::RenderWindow& window) {
     for (auto& column : gridRect) {
         for (auto& rect : column) {

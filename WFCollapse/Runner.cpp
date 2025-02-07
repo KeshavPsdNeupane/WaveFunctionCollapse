@@ -3,12 +3,7 @@ Runner::Runner() :
 	window(std::make_shared<sf::RenderWindow>(sf::VideoMode(Utility::WINDOW_SIZE.x, Utility::WINDOW_SIZE.y)
 		, "SFML works!", sf::Style::Close)),
 	event(), wfcStack(Utility::GRID_COUNT),
-	wfcQueue(Utility::GRID_COUNT){
-
-	if (Utility::FIX_FRAME) {
-		this->window->setFramerateLimit(Utility::MAX_FRAME);
-	}
-}
+	wfcQueue(Utility::GRID_COUNT) {}
 
 void Runner::Init() {
 	if (Utility::USE_STACK) {

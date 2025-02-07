@@ -57,7 +57,7 @@ struct TileSet {
             possibleAdjacentTile[Water] = { Water, Sand };
             weight[Water] = { 98, 95 }; 
             possibleAdjacentTile[Forest] = { Forest, Plain, Mountain };
-            weight[Forest] = { 98, 100, 94 }; 
+            weight[Forest] = { 97, 100, 94 }; 
             possibleAdjacentTile[Mountain] = { Mountain, Forest };
             weight[Mountain] = { 98, 96 };
         }

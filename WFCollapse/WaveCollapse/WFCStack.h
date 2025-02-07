@@ -11,6 +11,7 @@ private:
     std::vector<std::vector<GridCell>> grid;
     std::stack<GridCell*> waveOperation;
     std::vector<std::vector<sf::RectangleShape>> gridRect;
+
 	// for deterministic random number generation with seed
 	std::mt19937 mtRand;
 public:

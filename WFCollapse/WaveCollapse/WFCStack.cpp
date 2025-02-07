@@ -18,11 +18,11 @@ WFCStack::WFCStack(sf::Vector2i gridSize)
 			grid[x][y] = GridCell(sf::Vector2i(x, y));
 			sf::RectangleShape rect;
 			rect.setPosition(sf::Vector2f(size.x * x, size.y * y));
-			rect.setFillColor(sf::Color::White);
 			rect.setSize(size);
+			rect.setFillColor(sf::Color::Black);
 			if (Utility::IS_PADDING) {
 				rect.setOutlineThickness(1);
-				rect.setOutlineColor(sf::Color::Black);
+				rect.setOutlineColor(sf::Color::White);
 			}
 			this->gridRect[x][y] = rect;
 
@@ -43,13 +43,30 @@ void WFCStack::Init() {
 
 void WFCStack::WaveOperation() {
 	if (gridCount.x == 0 || gridCount.y == 0) return;
-	if (!waveOperation.empty()) {
-		SortWaveOperation();
-		GridCell* currentCell = waveOperation.top();
-		waveOperation.pop();
-		if (!currentCell->IsGraphCollapsed()) {
-			CollapseTheCurrentGrid(*currentCell);
-			PropagateTheWave(*currentCell);
+
+	if (Utility::DO_AT_ONCE) {
+		while (!waveOperation.empty()) {
+			GridCell* currentCell = waveOperation.top();
+			waveOperation.pop();
+			if (!currentCell->IsGraphCollapsed()) {
+				CollapseTheCurrentGrid(*currentCell);
+				PropagateTheWave(*currentCell);
+			}
+		}
+		return;
+
+	}
+	else {
+		if (!waveOperation.empty()) {
+			if (Utility::CAN_SORT) {
+				SortWaveOperation();
+			}
+			GridCell* currentCell = waveOperation.top();
+			waveOperation.pop();
+			if (!currentCell->IsGraphCollapsed()) {
+				CollapseTheCurrentGrid(*currentCell);
+				PropagateTheWave(*currentCell);
+			}
 		}
 	}
 }
